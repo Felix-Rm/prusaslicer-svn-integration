@@ -1,0 +1,38 @@
+name: PrusaSlicer autobuild trigger
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */12 * * *'
+
+jobs:
+  trigger-autobuild:
+    uses: Felix-Rm/prusaslicer-autobuild/.github/workflows/autobuild.yml@main
+    with:
+      only_if_new_release: true
+      create_release_copy: true
+      upstream_repo: prusa3d/PrusaSlicer
+      upstream_ref: latest:release
+      downstream_repo: Felix-Rm/prusaslicer-svn-integration
+      downstream_feature_branches: 'svn-integration'
+      release_tag_prefix: 'autobuild_'
+      release_name_prefix: 'Autobuild for Release of '
+      release_body_prefix: |
+        This is an autobuild release of PrusaSlicer.
+        There are no guarantees that this build is stable, no additional testing has been done.
+        
+        The PrusaSlicer builds attached below include the following extras:
+          - Option to add svn revision postfix on g-code export (from branch svn-integration)
+          - Tool for embossing svn revision (shortcut V) (from branch svn-integration)
+            Please note that any revision-emboss text will not be stored in the .3mf project file.
+
+        Revision information always consists of two parts:
+          - revision of construction source file (prefix s)
+          - revision of the .3mf project file (prefix p)
+
+        The respective revisions will be marked with `*` or `mod` in case either the construction source or the project file have been modified since the last commit.
+        If the file opened in PrusaSlicer is not yet saved or fully committed, PrusaSlicer will show a prompt option to automatically save and commit the file.
+        
+        Please note that the attached source archives do not contain the source code of the extras as they are kept separately on the feature branches listed above.
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
