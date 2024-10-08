@@ -380,6 +380,10 @@ set(SLIC3R_GUI_SOURCES
     Utils/PrusaConnect.cpp
     Utils/ServiceConfig.hpp
     Utils/ServiceConfig.cpp
+    Svn/SvnIntegration.cpp
+    Svn/SvnIntegration.hpp
+    Svn/SvnDialog.cpp
+    Svn/SvnDialog.hpp
 )
 
 find_package(NanoSVG REQUIRED)
