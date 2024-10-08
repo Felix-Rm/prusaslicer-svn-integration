@@ -3069,10 +3069,16 @@ namespace Slic3r {
 #endif
         };
 
+        auto exportable_volume = [](ModelVolume* volume){
+            if(volume == nullptr) return false;
+            if(volume->text_configuration.has_value() && volume->text_configuration->is_revision_emboss) return false;
+            return true;
+        };
+
         char buf[256];
         unsigned int vertices_count = 0;
         for (ModelVolume* volume : object.volumes) {
-            if (volume == nullptr)
+            if (exportable_volume(volume))
                 continue;
 
             volumes_offsets.insert({ volume, Offsets(vertices_count) });
@@ -3111,7 +3117,7 @@ namespace Slic3r {
 
         unsigned int triangles_count = 0;
         for (ModelVolume* volume : object.volumes) {
-            if (volume == nullptr)
+            if (exportable_volume(volume))
                 continue;
 
             bool is_left_handed = volume->is_left_handed();
