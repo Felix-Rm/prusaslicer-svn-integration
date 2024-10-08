@@ -27,6 +27,7 @@
 #include "slic3r/GUI/Gizmos/GLGizmoMmuSegmentation.hpp"
 #include "slic3r/GUI/Gizmos/GLGizmoSimplify.hpp"
 #include "slic3r/GUI/Gizmos/GLGizmoEmboss.hpp"
+#include "slic3r/GUI/Gizmos/GLGizmoRevisionEmboss.hpp"
 #include "slic3r/GUI/Gizmos/GLGizmoSVG.hpp"
 #include "slic3r/GUI/Gizmos/GLGizmoMeasure.hpp"
 
@@ -116,6 +117,7 @@ bool GLGizmosManager::init()
     m_gizmos.emplace_back(new GLGizmoMmuSegmentation(m_parent, "mmu_segmentation.svg", 9));
     m_gizmos.emplace_back(new GLGizmoMeasure(m_parent, "measure.svg", 10));
     m_gizmos.emplace_back(new GLGizmoEmboss(m_parent));
+    m_gizmos.emplace_back(new GLGizmoRevisionEmboss(m_parent));
     m_gizmos.emplace_back(new GLGizmoSVG(m_parent));
     m_gizmos.emplace_back(new GLGizmoSimplify(m_parent));
 
@@ -250,15 +252,6 @@ bool GLGizmosManager::handle_shortcut(int key)
         return false;
 
     auto is_key = [pressed_key = key](int gizmo_key) { return (gizmo_key == pressed_key - 64) || (gizmo_key == pressed_key - 96); };
-    // allowe open shortcut even when selection is empty    
-    if (GLGizmoBase* gizmo_emboss = m_gizmos[Emboss].get();
-        is_key(gizmo_emboss->get_shortcut_key())) {
-        dynamic_cast<GLGizmoEmboss *>(gizmo_emboss)->on_shortcut_key();
-        return true;
-    }
-
-    if (m_parent.get_selection().is_empty())
-        return false;
 
     auto is_gizmo = [is_key](const std::unique_ptr<GLGizmoBase> &gizmo) {
         return gizmo->is_activable() && is_key(gizmo->get_shortcut_key());
@@ -269,6 +262,20 @@ bool GLGizmosManager::handle_shortcut(int key)
         return false;
 
     EType gizmo_type = EType(it - m_gizmos.begin());
+
+    if (gizmo_type == Emboss){
+        dynamic_cast<GLGizmoEmboss *>( m_gizmos[Emboss].get())->on_shortcut_key();
+        return true;
+    }
+
+    if (m_parent.get_selection().is_empty())
+        return false;
+
+    if (gizmo_type == RevisionEmboss){
+        dynamic_cast<GLGizmoRevisionEmboss *>( m_gizmos[RevisionEmboss].get())->on_shortcut_key();
+        return true;
+    }
+
     return open_gizmo(gizmo_type);
 }
 

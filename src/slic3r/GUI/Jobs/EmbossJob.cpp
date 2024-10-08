@@ -711,8 +711,8 @@ bool check(const DataBase &input, bool check_fontfile, bool use_surface)
 
 bool check(GLGizmosManager::EType gizmo)
 {
-    assert(gizmo == GLGizmosManager::Emboss || gizmo == GLGizmosManager::Svg);
-    return gizmo == GLGizmosManager::Emboss || gizmo == GLGizmosManager::Svg;
+    assert(gizmo == GLGizmosManager::Emboss || gizmo == GLGizmosManager::RevisionEmboss || gizmo == GLGizmosManager::Svg);
+    return gizmo == GLGizmosManager::Emboss || gizmo == GLGizmosManager::RevisionEmboss || gizmo == GLGizmosManager::Svg;
 }
 
 bool check(const CreateVolumeParams &input)
@@ -1024,6 +1024,7 @@ void final_update_volume(TriangleMesh &&mesh, const DataUpdate &data, const Tran
     Plater *plater = wxGetApp().plater();
     // Check gizmo is still open otherwise job should be canceled
     assert(plater->canvas3D()->get_gizmos_manager().get_current_type() == GLGizmosManager::Emboss ||
+           plater->canvas3D()->get_gizmos_manager().get_current_type() == GLGizmosManager::RevisionEmboss ||
            plater->canvas3D()->get_gizmos_manager().get_current_type() == GLGizmosManager::Svg);
 
     if (data.make_snapshot) {

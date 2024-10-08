@@ -18,6 +18,7 @@
 #include "Selection.hpp"
 #include "format.hpp"
 #include "Gizmos/GLGizmoEmboss.hpp"
+#include "Gizmos/GLGizmoRevisionEmboss.hpp"
 #include "Gizmos/GLGizmoSVG.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -558,6 +559,7 @@ wxMenu* MenuFactory::append_submenu_add_generic(wxMenu* menu, ModelVolumeType ty
         }
 
     append_menu_item_add_text(sub_menu, type);
+    append_menu_item_add_revision(sub_menu, type);
     append_menu_item_add_svg(sub_menu, type);
 
     if (mode >= comAdvanced) {
@@ -590,7 +592,16 @@ static void append_menu_itemm_add_(const wxString& name, GLGizmosManager::EType 
             } else {
                 emboss->create_volume(volume_type);
             }
-        } else if (gizmo_type == GLGizmosManager::Svg) {
+        } else if (gizmo_type == GLGizmosManager::RevisionEmboss) {
+            auto revision_emboss = dynamic_cast<GLGizmoRevisionEmboss *>(gizmo_base);
+            assert(revision_emboss != nullptr);
+            if (revision_emboss == nullptr) return;
+            if (screen_position.has_value()) {
+                revision_emboss->create_volume(volume_type, *screen_position);
+            } else {
+                revision_emboss->create_volume(volume_type);
+            }
+         } else if (gizmo_type == GLGizmosManager::Svg) {
             auto svg = dynamic_cast<GLGizmoSVG *>(gizmo_base);
             assert(svg != nullptr);
             if (svg == nullptr) return;
@@ -614,6 +625,10 @@ static void append_menu_itemm_add_(const wxString& name, GLGizmosManager::EType 
 
 void MenuFactory::append_menu_item_add_text(wxMenu* menu, ModelVolumeType type, bool is_submenu_item/* = true*/){
     append_menu_itemm_add_(_L("Text"), GLGizmosManager::Emboss, menu, type, is_submenu_item);
+}
+
+void MenuFactory::append_menu_item_add_revision(wxMenu* menu, ModelVolumeType type, bool is_submenu_item/* = true*/){
+    append_menu_itemm_add_(_L("Revision Number"), GLGizmosManager::RevisionEmboss, menu, type, is_submenu_item);
 }
 
 void MenuFactory::append_menu_item_add_svg(wxMenu *menu, ModelVolumeType type, bool is_submenu_item /* = true*/){

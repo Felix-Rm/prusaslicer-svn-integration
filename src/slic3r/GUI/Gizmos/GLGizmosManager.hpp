@@ -83,6 +83,7 @@ public:
         MmuSegmentation,
         Measure,
         Emboss,
+        RevisionEmboss,
         Svg,
         Simplify,
         Undefined

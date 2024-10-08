@@ -169,6 +169,7 @@ void KBShortcutsDialog::fill_shortcuts()
             { "P", L("Gizmo FDM paint-on seam") },
             { "N", L("Gizmo Multi Material painting") },
             { "T", L("Gizmo Text emboss / engrave")},
+            { "V", L("Gizmo Revision number emboss / engrave")},
             { "Esc", L("Unselect gizmo or clear selection") },
             { "K", L("Change camera type (perspective, orthographic)") },
             { "B", L("Zoom to Bed") },

@@ -3807,8 +3807,10 @@ void GLCanvas3D::on_mouse(wxMouseEvent& evt)
 
             if (hover_volume->text_configuration.has_value()) {
                 m_selection.add_volumes(Selection::EMode::Volume, {(unsigned) hover_volume_id});
-                if (type != GLGizmosManager::EType::Emboss)
-                    m_gizmos.open_gizmo(GLGizmosManager::EType::Emboss);            
+                if (type != GLGizmosManager::EType::Emboss && !hover_volume->text_configuration->is_revision_emboss)
+                    m_gizmos.open_gizmo(GLGizmosManager::EType::Emboss);
+                if (type != GLGizmosManager::EType::RevisionEmboss && hover_volume->text_configuration->is_revision_emboss)
+                    m_gizmos.open_gizmo(GLGizmosManager::EType::RevisionEmboss);
                 wxGetApp().obj_list()->update_selections();
                 return;
             } else if (hover_volume->emboss_shape.has_value()) {

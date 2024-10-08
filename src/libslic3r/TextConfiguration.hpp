@@ -180,7 +180,8 @@ struct TextConfiguration
     EmbossStyle style;
 
     // Embossed text value
-    std::string text = "None";
+    std::string text = "";
+    bool is_revision_emboss = false;
 
     // undo / redo stack recovery
     template<class Archive> void serialize(Archive &ar) { ar(style, text); }
