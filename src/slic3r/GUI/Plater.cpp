@@ -19,6 +19,7 @@
 ///|/
 #include "Plater.hpp"
 #include "slic3r/GUI/Jobs/UIThreadWorker.hpp"
+#include "slic3r/Svn/SvnDialog.hpp"
 
 #include <cstddef>
 #include <algorithm>
@@ -5501,6 +5502,18 @@ void Plater::export_gcode(bool prefer_removable)
 			// Direct user to the last internal media.
 			start_dir = appconfig.get_last_output_dir(default_output_file.parent_path().string(), false);
 	}
+
+    if(Slic3r::Svn::start_resolve_revison_dialog()){
+        auto revison = Slic3r::Svn::resolve_revison_dialog("mod", "-", "s#", "p#");
+
+        if(revison.has_value()){
+            auto extension = default_output_file.extension().string();
+            auto filename = default_output_file.stem().string();
+            auto directory = default_output_file.parent_path();
+
+            default_output_file = directory / (filename + "." + revison.value() + extension);
+        }
+    }
 
     fs::path output_path;
     {
